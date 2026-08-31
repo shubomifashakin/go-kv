@@ -26,7 +26,7 @@ func main() {
 
 	conn, err := net.Dial("tcp", "localhost:3001")
 	if err != nil {
-		panic(err)
+		log.Fatalln("Failed to connect to server",err)
 	}
 	
 	defer conn.Close()
@@ -40,13 +40,13 @@ func main() {
 	case "ping":
 		_,err:=fmt.Fprintf(conn,"PING\r\n")
 		if err != nil {
-			panic(err)
+			log.Fatalln("failed to connect",err)
 		}
 
 		reader := bufio.NewReader(conn)
 		response, err := reader.ReadString('\n')
 		if err != nil {
-			panic(err)
+			log.Fatalln("Failed to read response",err)
 		}
 
 		responseFormatter(response)
@@ -61,13 +61,13 @@ func main() {
 		
 		_,err:=fmt.Fprintf(conn, "GET %s\r\n", key)
 		if err != nil {
-			panic(err)
+			log.Fatalln("Failed to get key",err)
 		}
 	
 		reader := bufio.NewReader(conn)
 		first, err := reader.ReadString('\n')
 		if err != nil {
-			panic(err)
+			log.Fatalln("Failed to read response",err)
 		}
 	
 		if first[0] == '-' {
@@ -77,7 +77,7 @@ func main() {
 
 		value, err := reader.ReadString('\n')
 		if err != nil {
-			panic(err)
+			log.Fatalln("Failed to get value",err)
 		}
 		fmt.Println(strings.TrimSpace(value))
 	
@@ -92,13 +92,13 @@ func main() {
 
 		_,err:=fmt.Fprintf(conn, "DEL %s\r\n",key)
 		if err != nil {
-			panic(err)
+			log.Fatalln("Failed to delete key",err)
 		}
 
 		reader := bufio.NewReader(conn)
 		response, err := reader.ReadString('\n')
 		if err != nil {
-			panic(err)
+			log.Fatalln("Failed to write response",err)
 		}
 		responseFormatter(response)
 
@@ -114,13 +114,13 @@ func main() {
 
 		_,err:=fmt.Fprintf(conn, "SET %s %s\r\n",key,value)
 		if err != nil {
-			panic(err)
+			log.Fatalln("Failed to set key",err)
 		}
 
 		reader := bufio.NewReader(conn)
 		response, err := reader.ReadString('\n')
 		if err != nil {
-			panic(err)
+			log.Fatalln("Failed to write response",err)
 		}
 		responseFormatter(response)
 
@@ -138,13 +138,13 @@ func main() {
 		expireAt := time.Now().Add(time.Duration(seconds) * time.Second).Unix()
 		_,err:=fmt.Fprintf(conn, "EXP %s %d\r\n", key, expireAt)
 		if err != nil {
-			panic(err)
+			log.Fatalln("Failed to expire key",err)
 		}
 
 		reader := bufio.NewReader(conn)
 		response, err := reader.ReadString('\n')
 		if err != nil {
-			panic(err)
+			log.Fatalln("Failed to write response",err)
 		}
 
 		responseFormatter(response)
