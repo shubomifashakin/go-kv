@@ -56,8 +56,15 @@ func main() {
 
 	logger.Info(fmt.Sprintf("Starting server on port %s",cfg.Port))
 
-	// start the tcp server
-	listener,err:=net.Listen("tcp",":"+cfg.Port)
+	// start the tcp server (straight to the point version)
+	// listener,err:=net.Listen("tcp",":"+cfg.Port)
+
+	port,_:=strconv.Atoi(cfg.Port)
+	addr:=net.TCPAddr{
+		Port: port,
+		IP: net.IPv4zero,
+	}
+	listener,err:=net.ListenTCP("tcp",&addr)
 
 	if err != nil {
 		logger.Fatal("Failed to start tcp server",zap.Error(err))
