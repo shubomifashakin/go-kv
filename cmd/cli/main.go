@@ -24,17 +24,18 @@ func main() {
 	expKey:=expireFlagset.String("k","","The key to expire")
 	expSeconds:=expireFlagset.Int("t",0,"The amount of time in seconds that the key has to live")
 
+	if len(os.Args) < 2 {
+		fmt.Println(len(os.Args),os.Args)
+		printUsage()
+		return
+	}
+
 	conn, err := net.Dial("tcp", "localhost:3000")
 	if err != nil {
 		log.Fatalln("Failed to connect to server",err)
 	}
 	
 	defer conn.Close()
-
-	if len(os.Args) < 2 {
-		printUsage()
-		return
-	}
 
 	switch os.Args[1] {
 	case "ping":
